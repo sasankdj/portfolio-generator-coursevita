@@ -6,28 +6,6 @@ import "@fontsource/itim"; // ✅ Import Itim font
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-between px-6 py-8 font-itim">
-      {/* Top Bar */}
-      <div className="w-full flex justify-between items-center">
-        <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="flex gap-1 bg-gray-300 p-3 rounded-lg shadow"
-        >
-          <img src="/logo.png" alt="logo" className="h-7" />
-          <p className="text-sm cursor-pointer">Portfolio</p>
-        </motion.div>
-
-        <motion.button
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="px-4 py-2 rounded-lg border shadow bg-[#b7b5f4] text-black hover:scale-105 hover:opacity-90 transition-transform"
-        >
-          Contact
-        </motion.button>
-      </div>
-
       {/* Hero Section */}
       <motion.div
         initial={{ y: 40, opacity: 0 }}

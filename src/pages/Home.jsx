@@ -1,19 +1,6 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-gray-50 h-20 flex items-center justify-between px-4 md:px-16">
-        <div className="flex items-center gap-4">
-          <img 
-            src="logo.png" 
-            alt="Magic wand icon" 
-            className="w-14 h-14"
-          />
-          <h1 className="text-3xl font-bold text-gray-700">Portfolio</h1>
-        </div>
-        <div className="text-2xl font-bold text-gray-700">Settings</div>
-      </header>
-
       {/* Welcome Section */}
       <section className="bg-blue-100 border border-gray-400 mx-4 md:mx-8 mt-4 rounded-lg p-6 md:p-8">
         <h2 className="text-3xl font-bold text-black mb-4">Welcome, Alex</h2>
