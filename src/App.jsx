@@ -7,6 +7,7 @@ import Option from './pages/Option'
 import Form from './pages/Form'
 import AboutUs from './pages/AboutUs'
 import ContactUs from './pages/ContactUs'
+import Templates from './pages/Templates'
 const App = () => {
   return (
     <Router>
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/form" element={<Form />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/templates" element={<Templates />} />
       </Routes>
     </Router>
   )
