@@ -8,6 +8,8 @@ import Form from './pages/Form'
 import AboutUs from './pages/AboutUs'
 import ContactUs from './pages/ContactUs'
 import Templates from './pages/Templates'
+import Deployment from './pages/Deployment'
+import Success from './pages/Success'
 const App = () => {
   return (
     <Router>
@@ -20,6 +22,8 @@ const App = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/templates" element={<Templates />} />
+        <Route path="/deployment" element={<Deployment />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
     </Router>
   )
