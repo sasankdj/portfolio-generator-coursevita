@@ -4,6 +4,9 @@ import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
 import Option from './pages/Option'
+import Form from './pages/Form'
+import AboutUs from './pages/AboutUs'
+import ContactUs from './pages/ContactUs'
 const App = () => {
   return (
     <Router>
@@ -11,9 +14,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/select" element={<Option />} />
-
-
+        <Route path="/upload" element={<Option />} />
+        <Route path="/form" element={<Form />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
     </Router>
   )

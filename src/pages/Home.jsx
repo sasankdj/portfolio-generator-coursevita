@@ -1,3 +1,5 @@
+import Footer from "../components/Footer";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -78,15 +80,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="mt-12 px-4 md:px-8 py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="text-xl font-bold text-gray-500">© 2025 Portfolio</div>
-        <div className="flex gap-6">
-          <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
-          <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Terms</a>
-          <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Support</a>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
