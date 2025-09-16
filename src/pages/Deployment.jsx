@@ -1,7 +1,7 @@
 export default function Deployment() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #296B9A 0%, #99B5D0 100%)' }}>
-      {/* Header */}
+     
      
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

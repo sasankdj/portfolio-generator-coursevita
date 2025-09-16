@@ -2,8 +2,10 @@ import React from "react";
 import { Rocket, Wand2, AtSign } from "lucide-react";
 import { motion } from "framer-motion";
 import "@fontsource/itim"; // ✅ Import Itim font
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col items-center justify-between px-6 py-8 font-itim">
       {/* Hero Section */}
@@ -24,6 +26,7 @@ export default function LandingPage() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="mt-6 px-6 py-3 rounded-lg shadow bg-[#b7b5f4] text-black font-medium flex items-center gap-2"
+          onClick={() => navigate('/signup')}
         >
           GET STARTED <Rocket className="w-4 h-4" />
         </motion.button>

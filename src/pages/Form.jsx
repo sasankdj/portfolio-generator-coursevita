@@ -1,17 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePortfolio } from '../components/PortfolioContext';
 
 export default function Form() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    linkedin: '',
-    skills: '',
-    careerObjective: '',
-    projects: [{ title: '', description: '' }, { title: '', description: '' }],
-    experience: { company: '', jobTitle: '', duration: '', responsibilities: '' },
-    achievements: ''
-  });
+  const { userDetails, updateUserDetails } = usePortfolio();
+  const [formData, setFormData] = useState(userDetails);
+  const [enhanced, setEnhanced] = useState(false);
+
+  useEffect(() => {
+    setFormData(userDetails);
+  }, [userDetails]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -200,10 +198,62 @@ export default function Form() {
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-8 mt-8 mb-6">
-          <button className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors">
+          <button
+            type="button"
+            onClick={() => {
+              // Navigate to templates page
+              window.location.href = '/templates';
+            }}
+            className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors"
+          >
             Choose Templates
           </button>
-          <button type="submit" className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors">
+          <button
+            type="button"
+            onClick={() => {
+              // Export PDF logic
+              import('jspdf').then(({ jsPDF }) => {
+                const doc = new jsPDF();
+                const data = {
+                  fullName: formData.fullName,
+                  email: formData.email,
+                  linkedin: formData.linkedin,
+                  skills: formData.skills,
+                  careerObjective: formData.careerObjective,
+                  projects: formData.projects,
+                  experience: formData.experience,
+                  achievements: formData.achievements,
+                };
+                let y = 10;
+                doc.setFontSize(16);
+                doc.text('User Details', 10, y);
+                y += 10;
+                doc.setFontSize(12);
+                Object.entries(data).forEach(([key, value]) => {
+                  if (typeof value === 'string') {
+                    doc.text(`${key}: ${value}`, 10, y);
+                    y += 10;
+                  } else if (Array.isArray(value)) {
+                    doc.text(`${key}:`, 10, y);
+                    y += 10;
+                    value.forEach((item, idx) => {
+                      doc.text(`  ${idx + 1}. ${item.title} - ${item.description}`, 10, y);
+                      y += 10;
+                    });
+                  } else if (typeof value === 'object') {
+                    doc.text(`${key}:`, 10, y);
+                    y += 10;
+                    Object.entries(value).forEach(([k, v]) => {
+                      doc.text(`  ${k}: ${v}`, 10, y);
+                      y += 10;
+                    });
+                  }
+                });
+                doc.save('user-details.pdf');
+              });
+            }}
+            className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors"
+          >
             Export PDF
           </button>
         </div>

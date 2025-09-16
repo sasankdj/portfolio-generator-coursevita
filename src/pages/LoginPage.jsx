@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "../components/AuthContext";
 
 const LoginPage = () => {
@@ -18,13 +17,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 to-purple-300 p-4">
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        // ✅ Changed backdrop-blur-lg to 2xl for more blur, and made the border more transparent.
-        className="w-full max-w-md p-8 space-y-6 bg-white/20 backdrop-blur-2xl rounded-2xl shadow-xl border border-white/20"
-      >
+      <div className="w-full max-w-md p-8 space-y-6 bg-white/20 backdrop-blur-2xl rounded-2xl shadow-xl border border-white/20">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-slate-800">Log-in</h1>
           <div className="mt-2 text-gray-600">
@@ -75,14 +68,12 @@ const LoginPage = () => {
             />
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             type="submit"
             className="w-full py-3 font-bold text-black bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors"
           >
             Log in
-          </motion.button>
+          </button>
         </form>
 
         <div className="flex items-center text-gray-500 my-4">
@@ -93,17 +84,20 @@ const LoginPage = () => {
 
         <div className="flex flex-col sm:flex-row gap-4">
           {["Google", "LinkedIn", "GitHub"].map((provider) => (
-            <motion.button
+            <button
               key={provider}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                // Simulate OAuth login
+                login();
+                navigate('/home');
+              }}
               className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors"
             >
               <span className="font-medium text-black">{provider}</span>
-            </motion.button>
+            </button>
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

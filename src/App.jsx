@@ -12,6 +12,7 @@ import Deployment from './pages/Deployment'
 import Success from './pages/Success'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
+import Feedback from './pages/Feedback'
 const App = () => {
   return (
     <Router>
@@ -28,7 +29,7 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-
+        <Route path="/feedback" element={<Feedback />} />
       </Routes>
     </Router>
   )
