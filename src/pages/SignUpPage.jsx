@@ -7,16 +7,48 @@ const SignUpPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Password validation
+    if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long";
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    // Name validation
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Your sign-up logic goes here
-    console.log("Creating account with:", { name, email, password });
-    alert("Account created successfully!");
-    login();
-    navigate("/home");
+
+    if (validateForm()) {
+      // Your sign-up logic goes here
+      console.log("Creating account with:", { name, email, password });
+      alert("Account created successfully!");
+      login();
+      navigate("/home");
+    }
   };
 
   return (
@@ -51,8 +83,13 @@ const SignUpPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`mt-1 block w-full px-4 py-2.5 border rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.name ? 'border-red-500' : 'border-gray-300'
+              }`}
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+            )}
           </div>
 
           <div>
@@ -69,8 +106,13 @@ const SignUpPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`mt-1 block w-full px-4 py-2.5 border rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -87,8 +129,36 @@ const SignUpPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`mt-1 block w-full px-4 py-2.5 border rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.password ? 'border-red-500' : 'border-gray-300'
+              }`}
             />
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 text-left"
+            >
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className={`mt-1 block w-full px-4 py-2.5 border rounded-lg shadow-sm bg-white/50 placeholder:text-gray-500/90 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            {errors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+            )}
           </div>
 
           <button
