@@ -1,19 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { login, isLoggedIn } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/home');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // For demo purposes, any login is successful
-    login();
+    login({ name: 'User' }); // Pass a default user object
     navigate('/home');
   };
+
+  const handleGoogleSignIn = useGoogleLogin({ // onSuccess is now async
+    onSuccess: async (tokenResponse) => {
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
+        const userInfo = await userInfoRes.json();
+        login({ name: userInfo.name, email: userInfo.email });
+      } catch (error) {
+        console.error("Failed to fetch user info from Google", error);
+        login({ name: 'User' }); // Fallback to default user
+      }
+      navigate('/home');
+    },
+    onError: () => alert('Google sign-in failed. Please try again.'),
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 to-purple-300 p-4">
@@ -70,7 +97,7 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 font-bold text-black bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors"
+            className="w-full py-3 font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors"
           >
             Log in
           </button>
@@ -83,19 +110,33 @@ const LoginPage = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          {["Google", "LinkedIn", "GitHub"].map((provider) => (
-            <button
-              key={provider}
-              onClick={() => {
-                // Simulate OAuth login
-                login();
-                navigate('/home');
-              }}
-              className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <span className="font-medium text-black">{provider}</span>
-            </button>
-          ))}
+          {["Google", "LinkedIn", "GitHub"].map((provider) => {
+            if (provider === "Google") {
+              return (
+                <button
+                  key={provider}
+                  onClick={() => handleGoogleSignIn()}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="font-medium text-black">{provider}</span>
+                </button>
+              );
+            }
+            return (
+              <button
+                key={provider}
+                onClick={() => {
+                  // Simulate OAuth login
+                  login();
+                  navigate('/home');
+                }}
+                className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <span className="font-medium text-black">{provider}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

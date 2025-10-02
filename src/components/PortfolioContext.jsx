@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { parseResume } from '../utils/resumeParser';
 
 const PortfolioContext = createContext();
 
@@ -22,6 +21,7 @@ export const PortfolioProvider = ({ children }) => {
   const [resume, setResume] = useState(null);
   const [hasResume, setHasResume] = useState(false);
   const [hasPortfolio, setHasPortfolio] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [portfolioLink, setPortfolioLink] = useState('');
   const [githubConnected, setGithubConnected] = useState(false);
@@ -60,8 +60,16 @@ export const PortfolioProvider = ({ children }) => {
   }, []);
 
   const updateUserDetails = (details) => {
-    setUserDetails(details);
-    localStorage.setItem('userDetails', JSON.stringify(details));
+    if (typeof details === 'function') {
+      setUserDetails(prevDetails => {
+        const newDetails = details(prevDetails);
+        localStorage.setItem('userDetails', JSON.stringify(newDetails));
+        return newDetails;
+      });
+    } else {
+      setUserDetails(details);
+      localStorage.setItem('userDetails', JSON.stringify(details));
+    }
   };
 
   const uploadResume = async (file) => {
@@ -69,13 +77,28 @@ export const PortfolioProvider = ({ children }) => {
     setHasResume(true);
     localStorage.setItem('hasResume', 'true');
 
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    setLoading(true);
     try {
-      const parsedDetails = await parseResume(file);
-      updateUserDetails({ ...userDetails, ...parsedDetails });
-      alert('Resume uploaded and parsed successfully!');
+      const response = await fetch('http://localhost:3001/upload-resume', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Backend failed to parse resume.');
+      }
+
+      const parsedDetails = await response.json();
+      updateUserDetails(prevDetails => ({ ...prevDetails, ...parsedDetails }));
+      alert('Resume uploaded and parsed successfully! Check the form for extracted details.');
     } catch (error) {
       console.error('Error parsing resume:', error);
       alert('Resume uploaded, but parsing failed. Please fill details manually.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,6 +139,7 @@ export const PortfolioProvider = ({ children }) => {
       hasResume,
       uploadResume,
       hasPortfolio,
+      loading,
       createPortfolio,
       selectedTemplate,
       selectTemplate,

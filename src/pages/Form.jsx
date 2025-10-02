@@ -1,269 +1,132 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { usePortfolio } from '../components/PortfolioContext';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { usePortfolio } from "../components/PortfolioContext";
+import FormInputs from "../components/FormInputs";
 
-export default function Form() {
-  const { userDetails, updateUserDetails } = usePortfolio();
+function Form() {
+  const { state } = useLocation();
+  const { userDetails, updateUserDetails, uploadResume, loading } = usePortfolio();
+  const navigate = useNavigate();
+
+  const selectedTemplateId = state?.selectedTemplate || 'classic';
+
   const [formData, setFormData] = useState(userDetails);
-  const [enhanced, setEnhanced] = useState(false);
+  const [image, setImage] = useState(null); // Assuming you handle image uploads
 
   useEffect(() => {
     setFormData(userDetails);
   }, [userDetails]);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleProjectChange = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      projects: prev.projects.map((project, i) => 
-        i === index ? { ...project, [field]: value } : project
-      )
-    }));
-  };
-
-  const handleExperienceChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      experience: { ...prev.experience, [field]: value }
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Basic validation example
-    if (!formData.fullName || !formData.email) {
-      alert('Please fill in your full name and email.');
-      return;
+    updateUserDetails(formData);
+    alert('Portfolio details saved!');
+  };
+
+  const previewInNewTab = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/generate-portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formData,
+          template: selectedTemplateId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate portfolio');
+      }
+
+      const { url } = await response.json();
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Error generating portfolio:', error);
+      alert('Error generating portfolio. Please try again.');
     }
-    // For now, just log the form data
-    console.log('Form submitted:', formData);
-    alert('Form submitted successfully!');
+  };
+
+  const downloadHtmlFile = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/generate-portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formData,
+          template: selectedTemplateId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate portfolio');
+      }
+
+      const { url } = await response.json();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = url.split('/').pop();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+    } catch (error) {
+      console.error('Error generating portfolio:', error);
+      alert('Error generating portfolio. Please try again.');
+    }
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%)' }}>
-      {/* Header */}
-     
-
-      {/* Main Content */}
-      <div className="max-w-[1280px] mx-auto mt-6 px-4">
-        <form onSubmit={handleSubmit}>
-          <div className="bg-white rounded-[20px] p-8 shadow-sm">
-            <div className="grid lg:grid-cols-2 gap-12">
-            {/* Left Column */}
-            <div className="space-y-8">
-              {/* Personal Info */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Personal Info</h2>
-                
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                    <input
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={formData.fullName}
-                      onChange={(e) => handleInputChange('fullName', e.target.value)}
-                      className="w-full h-10 px-4 bg-gray-50 rounded-lg border-0 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                    <input
-                      type="email"
-                      placeholder="you@example.com"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full h-10 px-4 bg-gray-50 rounded-lg border-0 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">LinkedIn</label>
-                    <input
-                      type="url"
-                      placeholder="linkedin.com/in/username"
-                      value={formData.linkedin}
-                      onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                      className="w-full h-10 px-4 bg-gray-50 rounded-lg border-0 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Skills</h2>
-                <textarea
-                  placeholder="JavaScript, React, Python..."
-                  value={formData.skills}
-                  onChange={(e) => handleInputChange('skills', e.target.value)}
-                  rows={5}
-                  className="w-full px-4 py-3 bg-gray-50 rounded-lg border-0 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                />
-              </div>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-6 flex justify-start">
+          <button onClick={() => navigate('/templates')}
+            className="px-6 py-3 border-2 border-gray-600 text-gray-600 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300 font-medium flex items-center">
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Templates
+          </button>
+        </div>
+        <div className="bg-white p-8 rounded-xl shadow-lg relative">
+          {loading && (
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
+              <p className="text-xl font-semibold animate-pulse">Parsing Resume...</p>
             </div>
+          )}
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">Portfolio Details</h1>
+          <FormInputs formData={formData} setFormData={setFormData} image={image} setImage={setImage} uploadResume={uploadResume} loading={loading} />
+        </div>
 
-            {/* Right Column */}
-            <div className="space-y-8">
-              {/* Career Objective */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Career Objective</h2>
-                <textarea
-                  placeholder="Describe your career goal here..."
-                  value={formData.careerObjective}
-                  onChange={(e) => handleInputChange('careerObjective', e.target.value)}
-                  rows={5}
-                  className="w-full px-4 py-3 bg-gray-50 rounded-lg border-0 text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                />
-              </div>
-
-              {/* Projects */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Projects</h2>
-                <div className="space-y-4">
-                  {formData.projects.map((project, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
-                      <input
-                        type="text"
-                        placeholder="Project Title"
-                        value={project.title}
-                        onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
-                        className="w-full mb-3 text-sm font-bold text-gray-700 bg-transparent border-0 focus:outline-none placeholder-gray-400"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Short description..."
-                        value={project.description}
-                        onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-                        className="w-full text-sm text-gray-600 bg-transparent border-0 focus:outline-none placeholder-gray-400"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Experience */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Experience</h2>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <input
-                    type="text"
-                    placeholder="Company — Job Title"
-                    value={`${formData.experience.company}${formData.experience.company && formData.experience.jobTitle ? ' — ' : ''}${formData.experience.jobTitle}`}
-                    onChange={(e) => {
-                      const [company, jobTitle] = e.target.value.split(' — ');
-                      handleExperienceChange('company', company || '');
-                      handleExperienceChange('jobTitle', jobTitle || '');
-                    }}
-                    className="w-full mb-3 text-sm font-bold text-gray-700 bg-transparent border-0 focus:outline-none placeholder-gray-400"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Jan 2020 – Dec 2022"
-                    value={formData.experience.duration}
-                    onChange={(e) => handleExperienceChange('duration', e.target.value)}
-                    className="w-full mb-3 text-sm text-gray-600 bg-transparent border-0 focus:outline-none placeholder-gray-400"
-                  />
-                  <textarea
-                    placeholder="Key responsibilities..."
-                    value={formData.experience.responsibilities}
-                    onChange={(e) => handleExperienceChange('responsibilities', e.target.value)}
-                    rows={2}
-                    className="w-full text-sm text-gray-600 bg-transparent border-0 focus:outline-none placeholder-gray-400 resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* Achievements */}
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Achievements (Optional)</h2>
-                <div className="bg-white border border-gray-200 rounded-lg p-4">
-                  <textarea
-                    placeholder="Awards, certifications..."
-                    value={formData.achievements}
-                    onChange={(e) => handleInputChange('achievements', e.target.value)}
-                    rows={3}
-                    className="w-full text-sm text-gray-600 bg-transparent border-0 focus:outline-none placeholder-gray-400 resize-none"
-                  />
-                </div>
-              </div>
-            </div>
+        <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
+          <h2 className="text-2xl font-bold text-center mb-6">Actions</h2>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition"
+              onClick={handleSubmit}
+            >
+              💾 Save Details
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
+              onClick={downloadHtmlFile}
+            >
+              📄 Download HTML
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 transition"
+              onClick={previewInNewTab}
+            >
+              👁️ Preview
+            </button>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-8 mt-8 mb-6">
-          <button
-            type="button"
-            onClick={() => {
-              // Navigate to templates page
-              window.location.href = '/templates';
-            }}
-            className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors"
-          >
-            Choose Templates
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // Export PDF logic
-              import('jspdf').then(({ jsPDF }) => {
-                const doc = new jsPDF();
-                const data = {
-                  fullName: formData.fullName,
-                  email: formData.email,
-                  linkedin: formData.linkedin,
-                  skills: formData.skills,
-                  careerObjective: formData.careerObjective,
-                  projects: formData.projects,
-                  experience: formData.experience,
-                  achievements: formData.achievements,
-                };
-                let y = 10;
-                doc.setFontSize(16);
-                doc.text('User Details', 10, y);
-                y += 10;
-                doc.setFontSize(12);
-                Object.entries(data).forEach(([key, value]) => {
-                  if (typeof value === 'string') {
-                    doc.text(`${key}: ${value}`, 10, y);
-                    y += 10;
-                  } else if (Array.isArray(value)) {
-                    doc.text(`${key}:`, 10, y);
-                    y += 10;
-                    value.forEach((item, idx) => {
-                      doc.text(`  ${idx + 1}. ${item.title} - ${item.description}`, 10, y);
-                      y += 10;
-                    });
-                  } else if (typeof value === 'object') {
-                    doc.text(`${key}:`, 10, y);
-                    y += 10;
-                    Object.entries(value).forEach(([k, v]) => {
-                      doc.text(`  ${k}: ${v}`, 10, y);
-                      y += 10;
-                    });
-                  }
-                });
-                doc.save('user-details.pdf');
-              });
-            }}
-            className="w-48 h-18 bg-blue-200 border-4 border-black rounded-[45px] flex items-center justify-center text-lg font-bold text-black hover:bg-blue-300 transition-colors"
-          >
-            Export PDF
-          </button>
-        </div>
-        </form>
-
-        {/* Footer */}
-        <footer className="text-center pb-6">
-          <div className="text-xs text-gray-400">© 2025 Portfolio</div>
-        </footer>
       </div>
     </div>
   );
 }
+
+export default Form;

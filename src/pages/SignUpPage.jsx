@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const SignUpPage = () => {
   // Add state for the new 'name' field
@@ -9,8 +10,15 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/home');
+    }
+  }, [isLoggedIn, navigate]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -46,10 +54,29 @@ const SignUpPage = () => {
       // Your sign-up logic goes here
       console.log("Creating account with:", { name, email, password });
       alert("Account created successfully!");
-      login();
+      login({ name }); // Pass the user's name
       navigate("/home");
     }
   };
+
+  const handleGoogleSignIn = useGoogleLogin({ 
+    onSuccess: async (tokenResponse) => {
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
+        const userInfo = await userInfoRes.json();
+        login({ name: userInfo.name, email: userInfo.email });
+      } catch (error) {
+        console.error("Failed to fetch user info from Google", error);
+        login({ name: 'User' }); // Fallback to default user
+      }
+      navigate('/home');
+    },
+    onError: () => alert('Google sign-in failed. Please try again.'),
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-300 to-purple-300 p-4">
@@ -176,19 +203,33 @@ const SignUpPage = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          {["Google", "LinkedIn", "GitHub"].map((provider) => (
-            <button
-              key={provider}
-              onClick={() => {
-                // Simulate OAuth login
-                login();
-                navigate('/home');
-              }}
-              className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <span className="font-medium text-black">{provider}</span>
-            </button>
-          ))}
+          {["Google", "LinkedIn", "GitHub"].map((provider) => {
+            if (provider === "Google") {
+              return (
+                <button
+                  key={provider}
+                  onClick={() => handleGoogleSignIn()}
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="font-medium text-black">{provider}</span>
+                </button>
+              );
+            }
+            return (
+              <button
+                key={provider}
+                onClick={() => {
+                  // Simulate OAuth login
+                  login();
+                  navigate('/home');
+                }}
+                className="flex-1 flex items-center justify-center py-2.5 border border-gray-300 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <span className="font-medium text-black">{provider}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

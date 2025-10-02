@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, Check, Palette, Sparkles, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ClassicTheme from '../templates/ClassicTheme.html?raw';
-import DarkTheme from '../templates/DarkTeme.html?raw';
+import ClassicTheme from '../templates/ClassicTheme.html?raw'; // This path is correct
+import DarkTheme from '../templates/DarkTheme.html?raw'; // This path is correct
 
 export default function Templates() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -200,8 +200,9 @@ export default function Templates() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/50 backdrop-blur-sm border border-white/30 text-gray-700 rounded-xl font-medium hover:bg-white/70 transition-all duration-300"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/50 backdrop-blur-sm border border-white/30 text-gray-700 rounded-xl font-medium hover:bg-white/70 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => handlePreview(template)}
+                    disabled={!template.content}
                   >
                     <Eye className="w-4 h-4" />
                     Preview

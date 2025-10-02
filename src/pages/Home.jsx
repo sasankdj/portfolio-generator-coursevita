@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { usePortfolio } from '../components/PortfolioContext';
 import Footer from "../components/Footer";
+import { useAuth } from '../components/AuthContext';
 
 export default function Home() {
   const navigate = useNavigate();
-  const { hasResume, hasPortfolio, portfolioLink, userDetails, connectGithub } = usePortfolio();
+  const { hasResume, hasPortfolio, portfolioLink, userDetails, connectGithub } = usePortfolio(); const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 font-sans">
@@ -13,7 +14,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-tr from-black/30 via-black/20 to-black/30 rounded-3xl animate-fade-in"></div>
         <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
           <h1 className="text-6xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-lg animate-slide-up">
-            Welcome back, Alex! <span className="inline-block animate-bounce">🚀</span>
+            Welcome back, {user?.name || 'User'}! <span className="inline-block animate-bounce">🚀</span>
           </h1>
           <p className="text-2xl md:text-3xl font-light mb-12 max-w-3xl mx-auto opacity-90 leading-relaxed">
             Ready to showcase your skills? Create an amazing portfolio or continue where you left off.

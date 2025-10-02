@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@fontsource/itim": "^5.2.6",
+    "@react-oauth/google": "^0.12.2",
     "@tailwindcss/vite": "^4.1.13",
     "framer-motion": "^12.23.12",
+    "google-auth-library": "^10.4.0",
     "jspdf": "^3.0.2",
     "lucide-react": "^0.543.0",
     "mammoth": "^1.10.0",
