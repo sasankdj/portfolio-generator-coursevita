@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const PortfolioContext = createContext();
 
@@ -93,10 +94,10 @@ export const PortfolioProvider = ({ children }) => {
 
       const parsedDetails = await response.json();
       updateUserDetails(prevDetails => ({ ...prevDetails, ...parsedDetails }));
-      alert('Resume uploaded and parsed successfully! Check the form for extracted details.');
+      toast.success('Resume uploaded and parsed successfully! Check the form for extracted details.');
     } catch (error) {
       console.error('Error parsing resume:', error);
-      alert('Resume uploaded, but parsing failed. Please fill details manually.');
+      toast.error('Resume uploaded, but parsing failed. Please fill details manually.');
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Feedback() {
   const [feedback, setFeedback] = useState('');
@@ -8,12 +9,12 @@ export default function Feedback() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (feedback.length > 300) {
-      alert('Feedback must be under 300 characters.');
+      toast.error('Feedback must be under 300 characters.');
       return;
     }
     // Send to backend
     console.log('Feedback:', feedback);
-    alert('Thank you for your feedback!');
+    toast.success('Thank you for your feedback!');
     navigate('/home');
   };
 

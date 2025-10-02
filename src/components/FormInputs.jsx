@@ -43,11 +43,6 @@ const FormInputs = ({ formData, setFormData, image, setImage, uploadResume, load
       {/* Personal Details */}
       <div className="p-6 border rounded-lg">
         <h3 className="text-xl font-semibold mb-4">Personal Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="input" />
-          <input name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="input" />
-          <input name="linkedin" value={formData.linkedin} onChange={handleInputChange} placeholder="LinkedIn URL" className="input" />
-        </div>
         <div className="mt-4 border-t pt-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Autofill from Resume</label>
           <input
@@ -65,6 +60,12 @@ const FormInputs = ({ formData, setFormData, image, setImage, uploadResume, load
             {loading ? 'Parsing...' : '📄 Upload & Autofill'}
           </button>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="input" />
+          <input name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="input" />
+          <input name="linkedin" value={formData.linkedin} onChange={handleInputChange} placeholder="LinkedIn URL" className="input" />
+        </div>
+        
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
           <input type="file" onChange={handleImageChange} accept="image/*" className="input" />

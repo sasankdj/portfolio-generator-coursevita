@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { usePortfolio } from "../components/PortfolioContext";
 import FormInputs from "../components/FormInputs";
 
@@ -20,7 +21,7 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateUserDetails(formData);
-    alert('Portfolio details saved!');
+    toast.success('Portfolio details saved!');
   };
 
   const previewInNewTab = async () => {
@@ -44,7 +45,7 @@ function Form() {
       window.open(url, '_blank');
     } catch (error) {
       console.error('Error generating portfolio:', error);
-      alert('Error generating portfolio. Please try again.');
+      toast.error('Error generating portfolio. Please try again.');
     }
   };
 
@@ -75,7 +76,7 @@ function Form() {
 
     } catch (error) {
       console.error('Error generating portfolio:', error);
-      alert('Error generating portfolio. Please try again.');
+      toast.error('Error generating portfolio. Please try again.');
     }
   };
 

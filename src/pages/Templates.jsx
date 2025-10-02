@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, Check, Palette, Sparkles, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ClassicTheme from '../templates/ClassicTheme.html?raw'; // This path is correct
-import DarkTheme from '../templates/DarkTheme.html?raw'; // This path is correct
+import ClassicTheme from '../templates/ClassicTheme.html?raw';
+import DarkTheme from '../templates/DarkTheme.html?raw';
+import MinimalistTheme from '../templates/MinimalistTheme.html?raw';
+import CreativeTheme from '../templates/CreativeTheme.html?raw';
 
 export default function Templates() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -66,7 +68,7 @@ export default function Templates() {
       gradient: 'from-slate-400 to-slate-600',
       previewGradient: 'from-slate-200 to-slate-300',
       icon: '🎨',
-      content: null // Will be generated
+      content: MinimalistTheme
     },
     {
       id: 'creative',
@@ -76,7 +78,7 @@ export default function Templates() {
       gradient: 'from-pink-400 to-purple-600',
       previewGradient: 'from-pink-200 to-purple-300',
       icon: '🎭',
-      content: null // Will be generated
+      content: CreativeTheme
     }
   ];
 

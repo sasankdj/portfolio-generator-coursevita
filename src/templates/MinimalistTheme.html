@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- Header -->
+  <header class="fixed w-full bg-white bg-opacity-90 backdrop-blur-md z-50 border-b border-gray-200">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#home" class="text-xl font-bold">{{fullName}}</a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="#about" class="text-gray-600 hover:text-black">About</a>
+        <a href="#portfolio" class="text-gray-600 hover:text-black">Portfolio</a>
+        <a href="#contact" class="text-gray-600 hover:text-black">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Home -->
+  <section id="home" class="min-h-screen flex items-center">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4">{{fullName}}</h1>
+        <p class="text-xl md:text-2xl text-gray-600 mb-8">{{careerObjective}}</p>
+        <div class="flex space-x-4">
+          <a href="{{linkedin}}" class="text-gray-600 hover:text-black">LinkedIn</a>
+          <a href="mailto:{{email}}" class="text-gray-600 hover:text-black">Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-20">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl font-bold mb-8">About Me</h2>
+        <div class="prose prose-lg max-w-none text-gray-600">
+          <p>{{careerObjective}}</p>
+        </div>
+        <h3 class="text-2xl font-bold mt-12 mb-4">Skills</h3>
+        <div class="flex flex-wrap gap-2">
+          <!-- SKILLS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-8">My Work</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- PROJECTS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-20">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl font-bold mb-8">Get In Touch</h2>
+        <p class="text-lg text-gray-600">
+          I'm currently available for freelance work. If you have a project in mind, feel free to reach out.
+        </p>
+        <a href="mailto:{{email}}" class="inline-block mt-4 text-lg font-semibold text-blue-600 hover:underline">
+          {{email}}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-gray-200">
+    <div class="container mx-auto px-6 text-center text-gray-500">
+      <p>&copy; 2025 {{fullName}}. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

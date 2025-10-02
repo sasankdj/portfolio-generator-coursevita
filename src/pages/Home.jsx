@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { usePortfolio } from '../components/PortfolioContext';
 import Footer from "../components/Footer";
 import { useAuth } from '../components/AuthContext';
@@ -24,7 +25,7 @@ export default function Home() {
               className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-purple-500 hover:to-indigo-600 text-white px-10 py-4 rounded-full text-xl font-semibold shadow-lg transform transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300"
               onClick={() => {
                 if (!hasResume) {
-                  alert('Please upload your resume first.');
+                  toast.error('Please upload your resume first.');
                   navigate('/upload');
                   return;
                 }
@@ -45,7 +46,7 @@ export default function Home() {
                 if (hasPortfolio) {
                   navigate('/templates');
                 } else {
-                  alert('No portfolio found. Please create one.');
+                  toast.error('No portfolio found. Please create one.');
                   navigate('/upload');
                 }
               }}
@@ -55,7 +56,7 @@ export default function Home() {
             <button
               className="border-2 border-white text-white px-10 py-4 rounded-full text-xl font-semibold hover:bg-white hover:text-indigo-700 shadow-lg transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300"
               onClick={() => {
-                alert('App Settings coming soon!');
+                toast.info('App Settings coming soon!');
               }}
             >
               ⚙️ App Settings
@@ -121,7 +122,7 @@ export default function Home() {
                 const username = prompt('Enter your GitHub username:');
                 if (username) {
                   connectGithub(username);
-                  alert('GitHub connected!');
+                  toast.success('GitHub connected!');
                 }
               }}
             >
@@ -143,7 +144,7 @@ export default function Home() {
               className="w-full flex items-center gap-4 bg-gradient-to-r from-orange-400 to-red-500 text-white p-6 rounded-2xl text-2xl font-bold hover:from-orange-500 hover:to-red-600 hover:scale-105 transition-transform duration-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-red-400"
               onClick={() => {
                 if (!hasResume) {
-                  alert('Please upload your resume first.');
+                  toast.error('Please upload your resume first.');
                   navigate('/upload');
                   return;
                 }
@@ -161,7 +162,7 @@ export default function Home() {
               onClick={() => {
                 if (hasPortfolio && portfolioLink) {
                   navigator.clipboard.writeText(portfolioLink);
-                  alert('Portfolio link copied to clipboard!');
+                  toast.success('Portfolio link copied to clipboard!');
                 } else {
                   if (hasResume || (userDetails && Object.keys(userDetails).length > 0)) {
                     if (window.confirm('Portfolio does not exist. Create Portfolio now?')) {
@@ -201,7 +202,7 @@ export default function Home() {
                 if (hasPortfolio) {
                   navigate('/deployment');
                 } else {
-                  alert('No portfolio to preview.');
+                  toast.error('No portfolio to preview.');
                 }
               }}
             >

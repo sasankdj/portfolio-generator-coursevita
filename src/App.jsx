@@ -1,5 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
 import Home from './pages/Home'
@@ -13,14 +15,16 @@ import Success from './pages/Success'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import Feedback from './pages/Feedback'
+
 const App = () => {
   return (
     <Router>
       <Navbar />
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/upload" element={<Option />} />
+        <Route path="/upload" element={<Form />} />
         <Route path="/form" element={<Form />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
