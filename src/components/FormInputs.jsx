@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const FormInputs = ({ formData, setFormData, image, setImage, uploadResume, loading }) => {
+  const [enhancing, setEnhancing] = useState(false);
+  const [enhancedText, setEnhancedText] = useState('');
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -38,6 +40,34 @@ const FormInputs = ({ formData, setFormData, image, setImage, uploadResume, load
     if (file) await uploadResume(file);
   };
 
+    // 🔹 Function to call backend
+  const enhanceText = async (field, text) => {
+    if (!text || text.trim().length < 5) {
+      alert("Please write something before enhancing.");
+      return;
+    }
+    setEnhancing(true);
+    setEnhancedText('');
+    try {
+      const resp = await fetch("http://localhost:3001/api/enhance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, field }),
+      });
+      const data = await resp.json();
+      setEnhancedText(data.enhanced || '');
+    } catch (err) {
+      console.error(err);
+      alert("Error enhancing text");
+    }
+    setEnhancing(false);
+  };
+
+  const acceptEnhanced = (field) => {
+    if (!enhancedText) return;
+    setFormData({ ...formData, [field]: enhancedText });
+    setEnhancedText('');
+  };
   return (
     <div className="space-y-8">
       {/* Personal Details */}
@@ -74,10 +104,40 @@ const FormInputs = ({ formData, setFormData, image, setImage, uploadResume, load
       </div>
 
       {/* Professional Summary */}
-      <div className="p-6 border rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">Professional Summary</h3>
-        <textarea name="careerObjective" value={formData.careerObjective} onChange={handleInputChange} placeholder="Career Objective / Professional Bio" className="input h-24" />
-      </div>
+      {/* Professional Summary */}
+<div className="p-6 border rounded-lg">
+  <h3 className="text-xl font-semibold mb-4">Professional Summary</h3>
+  <textarea
+    name="careerObjective"
+    value={formData.careerObjective}
+    onChange={(e) => setFormData({ ...formData, careerObjective: e.target.value })}
+    placeholder="Career Objective / Professional Bio"
+    className="input h-24"
+  />
+
+  <button
+    onClick={() => enhanceText("careerObjective", formData.careerObjective)}
+    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded"
+    disabled={enhancing}
+  >
+    {enhancing ? "Enhancing..." : "✨ Enhance with AI"}
+  </button>
+</div>
+
+{/* Show Enhanced Result */}
+{enhancedText && (
+  <div className="p-4 border rounded bg-gray-50 mt-2">
+    <p className="mb-2 text-sm font-medium">Enhanced text:</p>
+    <div className="whitespace-pre-wrap">{enhancedText}</div>
+    <button
+      onClick={() => acceptEnhanced("careerObjective")}
+      className="mt-2 px-3 py-1 bg-green-600 text-white rounded"
+    >
+      Accept
+    </button>
+  </div>
+)}
+
 
       {/* Skills */}
       <div className="p-6 border rounded-lg">
