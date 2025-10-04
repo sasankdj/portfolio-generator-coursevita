@@ -1,3 +1,5 @@
+import { Github, UploadCloud } from 'lucide-react';
+
 export default function Deployment() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #296B9A 0%, #99B5D0 100%)' }}>
@@ -23,89 +25,69 @@ export default function Deployment() {
           </div>
         </div>
 
-        {/* Connect GitHub Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Connect GitHub</h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-base font-bold text-gray-500 mb-3">
-                GitHub Username
-              </label>
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                <input
-                  type="text"
-                  placeholder="your-github-username"
-                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded text-sm text-gray-400 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-                <button className="px-6 py-3 bg-gray-100 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors whitespace-nowrap">
-                  🔗 Connect
-                </button>
+       
+        {/* Manual Deployment Instructions */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 sm:p-8 mb-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">How to Host Your Portfolio Manually</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            {/* GitHub Pages Instructions */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-3 mb-4">
+                <Github className="w-6 h-6 text-gray-800" />
+                <h4 className="text-xl font-semibold text-gray-800">Option 1: GitHub Pages</h4>
               </div>
+              <ol className="list-decimal list-inside space-y-3 text-gray-600">
+                <li>
+                  <strong>Download Portfolio:</strong> Go to the success page and download your `portfolio.html` file.
+                </li>
+                <li>
+                  <strong>Rename File:</strong> Change the downloaded file's name to `index.html`.
+                </li>
+                <li>
+                  <strong>Create GitHub Repo:</strong> Create a new **public** repository on GitHub.
+                </li>
+                <li>
+                  <strong>Upload File:</strong> Upload your `index.html` file to the new repository.
+                </li>
+                <li>
+                  <strong>Enable Pages:</strong> In your repo settings, go to the "Pages" section. Select the `main` branch as the source and save.
+                </li>
+                <li>
+                  <strong>Done!</strong> Your site will be live at `your-username.github.io/repository-name`.
+                </li>
+              </ol>
             </div>
-            <p className="text-xs text-gray-400 font-bold">
-              We'll create a new repository with your portfolio files.
-            </p>
+
+            {/* Netlify Instructions */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-3 mb-4">
+                <UploadCloud className="w-6 h-6 text-cyan-600" />
+                <h4 className="text-xl font-semibold text-gray-800">Option 2: Netlify</h4>
+              </div>
+              <ol className="list-decimal list-inside space-y-3 text-gray-600">
+                <li>
+                  <strong>Download Portfolio:</strong> Get the `portfolio.html` file from the success page.
+                </li>
+                <li>
+                  <strong>Sign Up on Netlify:</strong> Create a free account on <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Netlify</a>.
+                </li>
+                <li>
+                  <strong>Drag & Drop:</strong> Log in to your Netlify dashboard. Simply drag and drop the `portfolio.html` file into the "Sites" area.
+                </li>
+                <li>
+                  <strong>Done!</strong> Netlify will instantly deploy your site and give you a live URL. You can customize the domain name in the site settings.
+                </li>
+                <li className="mt-4 pt-4 border-t border-gray-300">
+                  <strong>Alternative:</strong> You can also connect your GitHub account to Netlify and deploy a repository directly for a CI/CD workflow.
+                </li>
+              </ol>
+            </div>
+
           </div>
         </div>
 
-        {/* Optional Netlify Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Optional: Deploy to Netlify</h3>
-          
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
-            <div className="mb-6 lg:mb-0 lg:flex-1">
-              <div className="bg-gray-50 border border-gray-300 rounded px-4 py-3 mb-4">
-                <h4 className="text-lg text-gray-700 mb-2">☁ Netlify Deployment</h4>
-                <p className="text-sm text-gray-400 font-bold">your-netlify-username</p>
-              </div>
-              <p className="text-xs text-gray-500">
-                Auto-deploy your portfolio and get a live URL.
-              </p>
-            </div>
-            
-            <div className="lg:ml-8">
-              <button className="w-full lg:w-auto px-6 py-8 bg-gray-100 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors">
-                ➡ Connect Netlify
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Summary Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Summary</h3>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gray-100 rounded px-4 py-3">
-              <div className="text-sm text-gray-700 mb-1">Selected Template</div>
-              <div className="bg-gray-400 text-white rounded px-3 py-1 text-xs inline-block">
-                Slate Minimal
-              </div>
-            </div>
-            
-            <div className="bg-gray-100 rounded px-4 py-3">
-              <div className="text-sm text-gray-700 mb-1">Deployment</div>
-              <div className="bg-gray-400 text-white rounded px-3 py-1 text-xs inline-block">
-                GitHub
-              </div>
-            </div>
-          </div>
-          
-          <p className="text-xs text-gray-500 mb-6">
-            When you click Generate Portfolio, we'll build and push your site to your GitHub repository. If Netlify is connected, we'll also trigger a deployment.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-            <button className="px-6 py-3 bg-gray-400 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-500 transition-colors">
-              💾 Save Draft
-            </button>
-            <button className="px-8 py-3 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 transition-colors">
-              🚀 Generate Portfolio
-            </button>
-          </div>
-        </div>
-      </main>
+              </main>
 
       {/* Footer */}
       <footer className="px-4 sm:px-6 lg:px-8 py-8">

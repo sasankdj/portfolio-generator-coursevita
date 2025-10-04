@@ -25,6 +25,7 @@ function Form() {
   };
 
   const previewInNewTab = async () => {
+    updateUserDetails(formData); // Update context before action
     try {
       const response = await fetch('http://localhost:3001/generate-portfolio', {
         method: 'POST',
@@ -49,7 +50,35 @@ function Form() {
     }
   };
 
+  const createAndNavigate = async () => {
+    updateUserDetails(formData); // Update context before action
+    try {
+      const response = await fetch('http://localhost:3001/generate-portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formData,
+          template: selectedTemplateId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate portfolio');
+      }
+
+      const data = await response.json();
+      toast.success("Portfolio created successfully!");
+      navigate('/success', { state: { portfolioUrl: data.url, template: selectedTemplateId } });
+    } catch (error) {
+      console.error('Error creating portfolio:', error);
+      toast.error('Error creating portfolio. Please try again.');
+    }
+  };
+
   const downloadHtmlFile = async () => {
+     updateUserDetails(formData); // Update context before action
      try {
        const response = await fetch('http://localhost:3001/api/download-html', {
          method: 'POST',
@@ -118,10 +147,16 @@ function Form() {
               📄 Download HTML
             </button>
             <button
-              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 transition"
+              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition"
               onClick={previewInNewTab}
             >
-              👁️ Preview
+              👁️ Preview in New Tab
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center px-4 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 transition"
+              onClick={createAndNavigate}
+            >
+              ✨ Create Portfolio
             </button>
           </div>
         </div>

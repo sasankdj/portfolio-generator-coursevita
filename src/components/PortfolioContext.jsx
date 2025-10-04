@@ -132,18 +132,18 @@ export const PortfolioProvider = ({ children }) => {
     localStorage.setItem('netlifyUsername', username);
   };
 
-  const downloadPortfolioHtml = async () => {
-    if (!selectedTemplate) {
+  const downloadPortfolioHtml = async (template) => {
+    if (!template) {
       toast.error("Please select a template first.");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/generate-html', {
+      const response = await fetch('http://localhost:3001/api/download-html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userDetails, templateId: selectedTemplate }),
+        body: JSON.stringify({ formData: userDetails, template }),
       });
 
       if (!response.ok) throw new Error('Failed to generate HTML.');

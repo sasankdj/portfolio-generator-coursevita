@@ -15,6 +15,7 @@ import Success from './pages/Success'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import Feedback from './pages/Feedback'
+import PortfolioSuccess from './pages/PortfolioSuccess'
 
 const App = () => {
   return (
@@ -30,7 +31,7 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/templates" element={<Templates />} />
         <Route path="/deployment" element={<Deployment />} />
-        <Route path="/success" element={<Success />} />
+        <Route path="/success" element={<PortfolioSuccess />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/feedback" element={<Feedback />} />
