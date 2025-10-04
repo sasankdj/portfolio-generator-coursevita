@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
 
 const FormInputs = ({ formData, setFormData, image, setImage, loading }) => {
   const [enhancing, setEnhancing] = useState(false);
   const [enhancedText, setEnhancedText] = useState("");
   const fileInputRef = useRef(null);
+  const [globallyEnhancedData, setGloballyEnhancedData] = useState(null);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -104,8 +106,58 @@ const FormInputs = ({ formData, setFormData, image, setImage, loading }) => {
     setEnhancing(false);
   };
 
+  // Enhance All with AI
+  const enhanceAllWithAI = async () => {
+    setEnhancing(true);
+    setGloballyEnhancedData(null);
+    try {
+      const resp = await fetch("http://localhost:3001/api/enhance-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formData }),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Failed to get AI enhancement.");
+      }
+
+      const data = await resp.json();
+      setGloballyEnhancedData(data.enhancedData);
+      toast.success("AI suggestions are ready for your review!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error enhancing portfolio. Please try again.");
+    } finally {
+      setEnhancing(false);
+    }
+  };
+
+  const acceptGlobalEnhancement = () => {
+    if (globallyEnhancedData) {
+      setFormData(prev => ({ ...prev, ...globallyEnhancedData }));
+      setGloballyEnhancedData(null);
+      toast.success("Portfolio details have been updated with AI suggestions!");
+    }
+  };
+
+  const rejectGlobalEnhancement = () => {
+    setGloballyEnhancedData(null);
+  };
+
   return (
     <div className="space-y-8">
+      {/* Global AI Enhance Button */}
+      <div className="p-4 border rounded-lg bg-gray-50 text-center">
+        <button
+          onClick={enhanceAllWithAI}
+          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-transform transform hover:scale-105 shadow-lg"
+          disabled={enhancing}
+        >
+          {enhancing ? "Enhancing..." : "✨ Enhance All with AI"}
+        </button>
+        <p className="text-sm text-gray-500 mt-2">Let AI review and improve your entire portfolio content.</p>
+      </div>
+
       {/* Personal Details */}
       <div className="p-6 border rounded-lg">
         <h3 className="text-xl font-semibold mb-4">Personal Details</h3>
@@ -175,6 +227,40 @@ const FormInputs = ({ formData, setFormData, image, setImage, loading }) => {
           placeholder="Career Objective / Professional Bio"
           className="input h-24"
         />
+        {globallyEnhancedData?.careerObjective && (
+          <div className="mt-4 p-4 border-l-4 border-purple-400 bg-purple-50">
+            <h4 className="font-semibold text-purple-800">AI Suggestion for Summary:</h4>
+            <p className="text-gray-700 italic mt-1">{globallyEnhancedData.careerObjective}</p>
+          </div>
+        )}
+      </div>
+
+      {/* AI Suggestions Control */}
+      {globallyEnhancedData && (
+        <div className="p-6 border-2 border-dashed border-green-500 rounded-lg bg-green-50 text-center">
+          <h3 className="text-xl font-bold text-green-800">AI Suggestions Ready!</h3>
+          <p className="text-gray-600 my-3">AI has enhanced your portfolio. You can see suggestions below each section. Apply all changes or reject them.</p>
+          <div className="flex justify-center gap-4 mt-4">
+            <button onClick={acceptGlobalEnhancement} className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              ✅ Accept All
+            </button>
+            <button onClick={rejectGlobalEnhancement} className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+              ❌ Reject
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Skills */}
+      <div className="p-6 border rounded-lg">
+        <h3 className="text-xl font-semibold mb-4">Skills</h3>
+        <input
+          name="skills"
+          value={formData.skills}
+          onChange={handleInputChange}
+          placeholder="Skills (comma-separated)"
+          className="input"
+        />
       </div>
 
       {/* Skills */}
@@ -219,6 +305,14 @@ const FormInputs = ({ formData, setFormData, image, setImage, loading }) => {
                 placeholder="Technologies"
                 className="input"
               />
+              {globallyEnhancedData?.projects?.[index] && (
+                <div className="md:col-span-3 mt-2 p-3 border-l-4 border-purple-400 bg-purple-50 rounded-r-lg">
+                   <h4 className="font-semibold text-purple-800 text-sm">AI Suggestion for Project {index + 1}:</h4>
+                   <p className="text-sm text-gray-700 mt-1"><strong>Title:</strong> {globallyEnhancedData.projects[index].title}</p>
+                   <p className="text-sm text-gray-700 mt-1"><strong>Description:</strong> {globallyEnhancedData.projects[index].description}</p>
+                   <p className="text-sm text-gray-700 mt-1"><strong>Technologies:</strong> {globallyEnhancedData.projects[index].technologies}</p>
+                </div>
+              )}
             </div>
           ))}
       </div>
@@ -270,6 +364,14 @@ const FormInputs = ({ formData, setFormData, image, setImage, loading }) => {
           placeholder="Achievements or Testimonials"
           className="input h-24"
         />
+        {globallyEnhancedData?.achievements && (
+          <div className="mt-4 p-4 border-l-4 border-purple-400 bg-purple-50">
+            <h4 className="font-semibold text-purple-800">AI Suggestion for Achievements:</h4>
+            <pre className="text-gray-700 italic mt-1 whitespace-pre-wrap font-sans">
+              {globallyEnhancedData.achievements}
+            </pre>
+          </div>
+        )}
       </div>
 
       <style jsx>{`
