@@ -132,6 +132,38 @@ export const PortfolioProvider = ({ children }) => {
     localStorage.setItem('netlifyUsername', username);
   };
 
+  const downloadPortfolioHtml = async () => {
+    if (!selectedTemplate) {
+      toast.error("Please select a template first.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/generate-html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userDetails, templateId: selectedTemplate }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate HTML.');
+
+      const htmlBlob = await response.blob();
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(htmlBlob);
+      link.download = 'portfolio.html';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("Portfolio HTML downloaded!");
+    } catch (error) {
+      console.error('Error downloading portfolio:', error);
+      toast.error(error.message || 'Could not download portfolio.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <PortfolioContext.Provider value={{
       userDetails,
@@ -151,7 +183,8 @@ export const PortfolioProvider = ({ children }) => {
       githubUsername,
       netlifyUsername,
       connectGithub,
-      connectNetlify
+      connectNetlify,
+      downloadPortfolioHtml
     }}>
       {children}
     </PortfolioContext.Provider>
